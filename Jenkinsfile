@@ -5,7 +5,7 @@ node{
    stage('Compile-Package'){
       // Get maven home path
       def mvnHome =  tool name: 'M3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn clean package"
+      sh "${mvnHome}/bin/mvn clean package -P MySQL"
    }
    stage('Deploy to Tomcat'){
       sh 'sudo cp target/*.war /opt/tomcat9/webapps'
