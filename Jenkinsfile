@@ -4,7 +4,7 @@ node('docker') {
   }
   stage('Compile-Package'){
       def mvnHome =  tool name: 'M3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn clean package -P MySQL
+      sh "${mvnHome}/bin/mvn clean package -P MySQL"
       //sh "mvn clean package -P MySQL"
   }
   //stage('Build & Unit test'){
