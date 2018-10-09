@@ -1,5 +1,6 @@
-node('docker') {
-  stage('Poll') {
+//node('docker') {
+node{
+  stage('Pull') {
      checkout scm
   }
 //  stage('Compile-Package'){
