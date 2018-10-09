@@ -1,17 +1,18 @@
-node('docker') {
+//node('docker') {
+node{ 
   stage('Poll') {
-    checkout scm
+     checkout scm
   }
-  stage('Compile-Package'){
-      def mvnHome =  tool name: 'M3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn clean package -P MySQL"
-      //sh "mvn clean package -P MySQL"
-  }
-  //stage('Build & Unit test'){
-   // sh 'mvn clean -P MySQL verify -DskipITs=true';
-   // junit '**/target/surefire-reports/TEST-*.xml'
-   // archive 'target/*.jar'
+//  stage('Compile-Package'){
+ //     //def mvnHome =  tool name: 'M3', type: 'maven'   
+      //sh "${mvnHome}/bin/mvn clean package -P MySQL"
+ //    sh "mvn clean package -P MySQL"
  // }
+  stage('Build & Unit test'){
+      sh 'mvn clean -P MySQL verify -DskipITs=true';
+      junit '**/target/surefire-reports/TEST-*.xml'
+      archive 'target/*.jar'
+ }
   stage('Static Code Analysis'){
     sh 'mvn clean verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=example-project -Dsonar.projectKey=example-project -Dsonar.projectVersion=$BUILD_NUMBER';
   }
