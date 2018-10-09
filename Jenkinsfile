@@ -1,7 +1,8 @@
 //node('docker') {
 node{
   stage('Pull') {
-     git 'https://github.com/ngoducquyet/petcicd.git'
+      checkout scm
+//     git 'https://github.com/ngoducquyet/petcicd.git'
   }
 //  stage('Compile-Package'){
  //     //def mvnHome =  tool name: 'M3', type: 'maven'   
