@@ -2,6 +2,9 @@ node('docker') {
   stage('Poll') {
     checkout scm
   }
+  stage('Compile-Package'){
+      sh "mvn clean package -P MySQL"
+  }
   stage('Build & Unit test'){
     sh 'mvn clean -P MySQL verify -DskipITs=true';
     junit '**/target/surefire-reports/TEST-*.xml'
