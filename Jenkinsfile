@@ -35,7 +35,7 @@ node{
     }"""
     server.upload(uploadSpec)
   }
-  stash includes: 'target/petclinic.war,src/pt/Hello_World_Test_Plan.jmx',
+  stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
   name: 'binary'
 }
 node('docker_pt') {
