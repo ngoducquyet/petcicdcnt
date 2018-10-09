@@ -30,7 +30,7 @@ node{
       "files": [
         {
           "pattern": "target/petclinic.war",
-          "target": "pet-project-ci/${BUILD_NUMBER}/",
+          "target": "pet-project-cd/${BUILD_NUMBER}/",
           "props": "Integration-Tested=Yes;Performance-Tested=No"
         }
       ]
