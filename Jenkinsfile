@@ -1,6 +1,6 @@
 node{
    stage('SCM Checkout'){
-     git 'https://github.com/ngoducquyet/spring-framework-petclinic.git'
+    checkout scm
    }
    stage('Compile-Package'){
       // Get maven home path
