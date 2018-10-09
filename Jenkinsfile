@@ -1,5 +1,5 @@
-node('docker') {
-//node{
+//node('docker') {
+node{
   stage('Pull') {
       checkout scm
 //     git 'https://github.com/ngoducquyet/petcicd.git'
