@@ -31,8 +31,8 @@ node('docker_pt') {
   stage ('QA Auto test Environment'){
     sh '''cd /home/jenkins/tomcat/bin
     ./startup.sh''';
-  }
-  stage ('Deploy'){
+//  }
+//  stage ('Deploy'){
     unstash 'binary'
     sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
   }
@@ -51,6 +51,8 @@ node('docker_pt') {
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
+    sh 'mkdir /opt/tomcat/webapps/${BUILD_NUMBER}/ '
+    sh 'ls target/petclinic.war'
     sh 'cp target/petclinic.war /opt/tomcat/webapps/${BUILD_NUMBER}/';
   }
 }
