@@ -34,8 +34,6 @@ node('docker_pt') {
   stage ('QA Auto test Environment'){
     sh '''cd /home/jenkins/tomcat/bin
     ./startup.sh''';
-//  }
-//  stage ('Deploy'){
     unstash 'binary'
     sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
   }
@@ -51,9 +49,28 @@ node('docker_pt') {
       }
   }
 }
+
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
     sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
+  }
+
+  stage('Email Notification'){
+      mail bcc: '', body: '''Hi there, job petclinic${BUILD_NUMBER} is completed
+      Thanks
+      Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
+  }
+  stage('Slack Notification'){
+      slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
+      channel: '#build',
+      color: 'good', 
+      message: 'Job petclinic${BUILD_NUMBER} env.BRANCH_NAME is completed, Slack!'
+  }
+  stage('Test'){
+    sh 'echo $BRANCH_NAME'
+    sh 'echo "${BRANCH_NAME}"'
+    sh 'echo BRANCH_NAME'
+    sh 'echo env.BRANCH_NAME'
   }
 }
