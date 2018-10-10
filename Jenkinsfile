@@ -1,5 +1,5 @@
-//node('docker') {
-node{
+node('docker') {
+//node{
   stage('Pull') {
       checkout scm
 //     git 'https://github.com/ngoducquyet/petcicd.git'
@@ -10,20 +10,20 @@ node{
  //    sh "mvn clean package -P MySQL"
  // }
   stage('Build & Unit test'){
+      sh 'echo "172.17.0.2   mysql-petclinic" >> /etc/hosts'
       sh 'mvn clean -P MySQL verify -DskipITs=true';
       junit '**/target/surefire-reports/TEST-*.xml'
       archive 'target/*.jar'
  }
   stage('Static Code Analysis'){
-//    sh 'mvn clean verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=example-project -Dsonar.projectKey=example-project -Dsonar.projectVersion=$BUILD_NUMBER';
-      sh 'mvn clean verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
+      sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
 
   }
-// stage ('Integration Test'){
-//    sh 'mvn clean verify -Dsurefire.skip=true';
- //   junit '**/target/failsafe-reports/TEST-*.xml'
-  //  archive 'target/*.jar'
-  //} 
+  stage ('Integration Test'){
+      sh 'mvn clean -P MySQL verify -Dsurefire.skip=true';
+      junit '**/target/failsafe-reports/TEST-*.xml'
+      archive 'target/*.jar'
+  } 
   stage ('Publish'){
     def server = Artifactory.server 'Default Artifactory Server'
     def uploadSpec = """{
