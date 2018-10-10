@@ -7,10 +7,9 @@ if (env.BRANCH_NAME == "feature*") {
         sh 'mvn clean -P MySQL verify -DskipITs=true';
         junit '**/target/surefire-reports/TEST-*.xml'
         archive 'target/*.jar'
-  }
+    }
     stage('Static Code Analysis'){
         sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
-
     }
     stage ('Publish to Artifactory'){
       def server = Artifactory.server 'Default Artifactory Server'
@@ -27,7 +26,7 @@ if (env.BRANCH_NAME == "feature*") {
     }
     stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
     name: 'binary'
-  }
+  
     stage('Email Notification'){
         mail bcc: '', body: '''Hi there, job petclinic is completed
         Thanks
@@ -40,7 +39,6 @@ if (env.BRANCH_NAME == "feature*") {
         message: 'Job petclinic is completed , Slack!'
     }
   }
-
 } 
 else {                                   
   node{
