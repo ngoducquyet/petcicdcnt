@@ -53,4 +53,15 @@ node {
     unstash 'binary'
     sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
+   stage('Email Notification'){
+      mail bcc: '', body: '''Hi there, job petclinic is completed
+      Thanks
+      Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
+   }
+   stage('Slack Notification'){
+       slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
+       channel: '#build',
+       color: 'good', 
+       message: 'Job petclinic is completed , Slack!'
+   }
 }
