@@ -53,7 +53,7 @@ node('docker_pt') {
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
-    sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
+    sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
 
   stage('Email Notification'){
@@ -66,11 +66,5 @@ node {
       channel: '#build',
       color: 'good', 
       message: 'Job petclinic${BUILD_NUMBER} env.BRANCH_NAME is completed, Slack!'
-  }
-  stage('Test'){
-    sh 'echo $BRANCH_NAME'
-    sh 'echo "${BRANCH_NAME}"'
-    sh 'echo BRANCH_NAME'
-    sh 'echo env.BRANCH_NAME'
   }
 }
