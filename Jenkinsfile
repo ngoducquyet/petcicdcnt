@@ -2,7 +2,6 @@ node{
   stage('Pull code') {
       checkout scm
   }
-  def env.BRANCH_NAME
   stage('Unit test'){
       sh 'mvn clean -P MySQL verify -DskipITs=true';
       junit '**/target/surefire-reports/TEST-*.xml'
