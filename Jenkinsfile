@@ -1,4 +1,4 @@
-if (env.BRANCH_NAME == "feature/*") {                                          
+if (env.BRANCH_NAME == "feature*") {                                          
   node{
     stage('Pull code') {
         checkout scm
