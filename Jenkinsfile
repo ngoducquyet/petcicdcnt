@@ -57,6 +57,7 @@ node {
   }
 
   stage('Email Notification'){
+
       mail bcc: '', body: '''Hi there, job petclinic is completed
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
