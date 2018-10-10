@@ -1,21 +1,16 @@
+//node('docker') {
 node{
-  stage('Pull code') {
+  stage('Pull') {
       checkout scm
+//     git 'https://github.com/ngoducquyet/petcicd.git'
   }
-  stage('Unit test & Static Code Analysis') {
-    parallel {
-        stage('Unit test') {
-            sh 'mvn clean -P MySQL verify -DskipITs=true';
-            junit '**/target/surefire-reports/TEST-*.xml'
-            archive 'target/*.jar'
-        }
-        stage('Static Code Analysis') {
-            sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
-        }
-    }
-  }
-/*
-  stage('Unit test'){
+//  stage('Compile-Package'){
+ //     //def mvnHome =  tool name: 'M3', type: 'maven'   
+      //sh "${mvnHome}/bin/mvn clean package -P MySQL"
+ //    sh "mvn clean package -P MySQL"
+ // }
+  stage('Build & Unit test'){
+      //sh 'echo "172.17.0.2   mysql-petclinic" >> /etc/hosts'
       sh 'mvn clean -P MySQL verify -DskipITs=true';
       junit '**/target/surefire-reports/TEST-*.xml'
       archive 'target/*.jar'
@@ -24,8 +19,12 @@ node{
       sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
 
   }
-*/
-  stage ('Publish to Artifactory'){
+  stage ('Integration Test'){
+      sh 'mvn clean -P MySQL verify -Dsurefire.skip=true';
+      junit '**/target/failsafe-reports/TEST-*.xml'
+      archive 'target/*.jar'
+  } 
+  stage ('Publish'){
     def server = Artifactory.server 'Default Artifactory Server'
     def uploadSpec = """{
       "files": [
@@ -42,11 +41,11 @@ node{
   name: 'binary'
 }
 node('docker_pt') {
-  stage ('QA Auto test Environment'){
+  stage ('Start Tomcat'){
     sh '''cd /home/jenkins/tomcat/bin
     ./startup.sh''';
   }
-  stage ('Deploy'){
+  stage ('Deploy '){
     unstash 'binary'
     sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
   }
