@@ -2,21 +2,15 @@ node{
   stage('Pull code') {
       checkout scm
   }
-  stage('Unit test & Static Code Analysis') {
-    parallel {
-        stage('Unit test') {
-            sh 'mvn clean -P MySQL verify -DskipITs=true';
-            junit '**/target/surefire-reports/TEST-*.xml'
-            archive 'target/*.jar'
-        }
-        stage('Static Code Analysis') {
-            sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
-        }
-    }
-  }
-/*
+  stage('Unit test'){
+      sh 'mvn clean -P MySQL verify -DskipITs=true';
+      junit '**/target/surefire-reports/TEST-*.xml'
+      archive 'target/*.jar'
+ }
+  stage('Static Code Analysis'){
+      sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
 
-*/
+  }
   stage ('Publish to Artifactory'){
     def server = Artifactory.server 'Default Artifactory Server'
     def uploadSpec = """{
