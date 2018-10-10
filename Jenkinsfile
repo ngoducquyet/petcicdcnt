@@ -10,7 +10,7 @@ node{
  //    sh "mvn clean package -P MySQL"
  // }
   stage('Build & Unit test'){
-      sh 'echo "172.17.0.2   mysql-petclinic" >> /etc/hosts'
+      //sh 'echo "172.17.0.2   mysql-petclinic" >> /etc/hosts'
       sh 'mvn clean -P MySQL verify -DskipITs=true';
       junit '**/target/surefire-reports/TEST-*.xml'
       archive 'target/*.jar'
