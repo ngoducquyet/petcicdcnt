@@ -57,7 +57,7 @@ node {
   }
 
   stage('Email Notification'){
-      mail bcc: '', body: '''Hi there, job petclinic${BUILD_NUMBER} is completed
+      mail bcc: '', body: '''Hi there, job petclinic is completed
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
@@ -65,6 +65,6 @@ node {
       slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
       channel: '#build',
       color: 'good', 
-      message: 'Job petclinic${BUILD_NUMBER} env.BRANCH_NAME is completed, Slack!'
+      message: 'Job petclinic is completed, Slack!'
   }
 }
