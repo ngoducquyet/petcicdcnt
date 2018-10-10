@@ -48,3 +48,9 @@ node('docker_pt') {
       }
   }
 }
+node {
+  stage ('Deploy Staging enviroment'){
+    unstash 'binary'
+    sh 'cp target/petclinic.war /opt/tomcat/webapps/${BUILD_NUMBER}/';
+  }
+}
