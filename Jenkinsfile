@@ -33,7 +33,7 @@ node{
 
 node('docker_pt') {
   stage ('QA Auto test Environment'){
-    if (env.BRANCH_NAME != 'master' && env.BRANCH_NAME != 'develop') {
+    if (env.BRANCH_NAME == 'master' && env.BRANCH_NAME == 'develop') {
       sh '''cd /home/jenkins/tomcat/bin
       ./startup.sh''';
       unstash 'binary'
@@ -43,7 +43,7 @@ node('docker_pt') {
     }
   }
   stage ('Performance Testing'){
-    if (env.BRANCH_NAME != 'master' && env.BRANCH_NAME != 'develop') {
+    if (env.BRANCH_NAME == 'master' && env.BRANCH_NAME == 'develop') {
       sh '''cd /opt/jmeter/bin/
       ./jmeter.sh -n -t $WORKSPACE/src/test/jmeter/petclinic_test_plan.jmx -l $WORKSPACE/test_report.jtl''';
       step([$class: 'ArtifactArchiver', artifacts: '**/*.jtl'])
@@ -55,7 +55,7 @@ node('docker_pt') {
 
   stage ('Promote build in Artifactory'){
 
-  if (env.BRANCH_NAME != 'master' && env.BRANCH_NAME != 'develop') {
+  if (env.BRANCH_NAME == 'master' && env.BRANCH_NAME == 'develop') {
       withCredentials([usernameColonPassword(credentialsId:
       'artifactory-account', variable: 'credentials')]) {
         sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-cd/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
@@ -70,7 +70,7 @@ node('docker_pt') {
 
 node {
   stage ('Deploy Staging enviroment'){
-    if (env.BRANCH_NAME != 'master' && env.BRANCH_NAME != 'develop') {
+    if (env.BRANCH_NAME == 'master' && env.BRANCH_NAME == 'develop') {
       unstash 'binary'
       sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
     } else {
@@ -79,6 +79,7 @@ node {
   }
   stage('Email Notification'){
       mail bcc: '', body: '''Hi there, job petclinic is completed
+      Link: $BUILD_URL
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
@@ -86,6 +87,6 @@ node {
       slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
       channel: '#build',
       color: 'good', 
-      message: 'Job petclinic is completed , Slack!'
+      message: 'Job petclinic is completed, Link: $BUILD_URL Slack!'
   }
 }
