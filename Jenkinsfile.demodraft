@@ -1,3 +1,4 @@
+
 node{
   stage('Pull code') {
       checkout scm
@@ -25,17 +26,14 @@ node{
     }"""
     server.upload(uploadSpec)
   }
-
+  
   stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
   name: 'binary'
 }
-
 node('docker_pt') {
   stage ('QA Auto test Environment'){
     sh '''cd /home/jenkins/tomcat/bin
     ./startup.sh''';
-//  }
-//  stage ('Deploy'){
     unstash 'binary'
     sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
   }
@@ -51,10 +49,11 @@ node('docker_pt') {
       }
   }
 }
+
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
-    sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
+    sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
 
   stage('Email Notification'){
@@ -68,12 +67,4 @@ node {
       color: 'good', 
       message: 'Job petclinic${BUILD_NUMBER} env.BRANCH_NAME is completed, Slack!'
   }
-  stage('Test'){
-    sh 'echo $BRANCH_NAME'
-    sh 'echo "${BRANCH_NAME}"'
-    sh 'echo BRANCH_NAME'
-    sh 'echo env.BRANCH_NAME'
-   
-  }
-
 }
