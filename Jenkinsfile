@@ -2,7 +2,7 @@ node{
   stage('Pull code') {
       checkout scm
   }
-
+  def env.BRANCH_NAME
   stage('Unit test'){
       sh 'mvn clean -P MySQL verify -DskipITs=true';
       junit '**/target/surefire-reports/TEST-*.xml'
@@ -72,14 +72,14 @@ node {
   stage ('Deploy Staging enviroment'){
     if (env.BRANCH_NAME == 'master' && env.BRANCH_NAME == 'develop') {
       unstash 'binary'
-      sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
+      sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${env.BRANCH_NAME}${BUILD_NUMBER}.war';
     } else {
         echo 'No Need'
     }
   }
   stage('Email Notification'){
       mail bcc: '', body: '''Hi there, job petclinic is completed
-      Link Web: https://staging.quyetngo.cf/petclinic${BUILD_NUMBER}
+      Link Web: https://staging.quyetngo.cf/petclinic${env.BRANCH_NAME}${BUILD_NUMBER}
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
@@ -87,6 +87,6 @@ node {
       slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
       channel: '#build',
       color: 'good', 
-      message: 'Job petclinic is completed, Link Web: https://staging.quyetngo.cf/petclinic${BUILD_NUMBER} Slack!'
+      message: 'Job petclinic is completed, Link Web: https://staging.quyetngo.cf/petclinic${env.BRANCH_NAME}${BUILD_NUMBER} Slack!'
   }
 }
