@@ -79,7 +79,7 @@ node {
   }
   stage('Email Notification'){
       mail bcc: '', body: '''Hi there, job petclinic is completed
-      Link Web: https://staging.quyetngo.cf/petclinic${BUILD_NUMBER}
+      Link: $BUILD_URL
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
@@ -87,6 +87,6 @@ node {
       slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
       channel: '#build',
       color: 'good', 
-      message: 'Job petclinic is completed, Link Web: https://staging.quyetngo.cf/petclinic${BUILD_NUMBER} Slack!'
+      message: 'Job petclinic is completed, Link: $BUILD_URL Slack!'
   }
 }
