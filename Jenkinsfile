@@ -70,14 +70,13 @@ node {
   stage ('Deploy Staging enviroment'){
     if ('$BRANCH_NAME' == 'master' && '$BRANCH_NAME' == 'develop') {
       unstash 'binary'
-//      sh 'rm -rf /opt/tomcat/webapps/petclinic${BUILD_NUMBER}*'
       sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
     } else {
         echo 'No Need'
     }
   }
   stage('Email Notification'){
-      mail bcc: '', body: '''Hi there, job petclinic${BUILD_NUMBER} $BRANCH_NAME is completed
+      mail bcc: '', body: '''Hi there, job petclinic is completed
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
@@ -85,6 +84,6 @@ node {
       slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
       channel: '#build',
       color: 'good', 
-      message: 'Job petclinic${BUILD_NUMBER} $BRANCH_NAME is completed, Slack!'
+      message: 'Job petclinic is completed, Slack!'
   }
 }
