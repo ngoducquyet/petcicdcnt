@@ -1,3 +1,4 @@
+
 node{
   stage('Pull code') {
       checkout scm
@@ -25,58 +26,36 @@ node{
     }"""
     server.upload(uploadSpec)
   }
-
+  
   stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
   name: 'binary'
 }
-
 node('docker_pt') {
   stage ('QA Auto test Environment'){
-    if ('$BRANCH_NAME' == 'master' && '$BRANCH_NAME' == 'develop') {
-      sh '''cd /home/jenkins/tomcat/bin
-      ./startup.sh''';
-      unstash 'binary'
-      sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
-    } else {
-        echo 'No Need'
-    }
+    sh '''cd /home/jenkins/tomcat/bin
+    ./startup.sh''';
+    unstash 'binary'
+    sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
   }
   stage ('Performance Testing'){
-    if ('$BRANCH_NAME' == 'master' && '$BRANCH_NAME' == 'develop') {
-      sh '''cd /opt/jmeter/bin/
-      ./jmeter.sh -n -t $WORKSPACE/src/test/jmeter/petclinic_test_plan.jmx -l $WORKSPACE/test_report.jtl''';
-      step([$class: 'ArtifactArchiver', artifacts: '**/*.jtl'])
-    } else {
-        echo 'No Need'
-    }
+    sh '''cd /opt/jmeter/bin/
+    ./jmeter.sh -n -t $WORKSPACE/src/test/jmeter/petclinic_test_plan.jmx -l $WORKSPACE/test_report.jtl''';
+    step([$class: 'ArtifactArchiver', artifacts: '**/*.jtl'])
   }
-
-
   stage ('Promote build in Artifactory'){
-  if ('$BRANCH_NAME' == 'master' && '$BRANCH_NAME' == 'develop') {
-      withCredentials([usernameColonPassword(credentialsId:
+    withCredentials([usernameColonPassword(credentialsId:
       'artifactory-account', variable: 'credentials')]) {
         sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-cd/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
       }
-  } else {
-      echo 'No Need'
-  }
-
-
   }
 }
 
 node {
   stage ('Deploy Staging enviroment'){
-    if ('$BRANCH_NAME' == 'master' && '$BRANCH_NAME' == 'develop') {
-      unstash 'binary'
-      sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
-    } else {
-        echo 'No Need'
-        echo env.BRANCH_NAME
-
-    }
+    unstash 'binary'
+    sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
+
   stage('Email Notification'){
 
       mail bcc: '', body: '''Hi there, job petclinic is completed
