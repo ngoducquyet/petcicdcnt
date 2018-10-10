@@ -74,10 +74,14 @@ node {
       sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
     } else {
         echo 'No Need'
+        echo env.BRANCH_NAME
+
     }
   }
   stage('Email Notification'){
+
       mail bcc: '', body: '''Hi there, job petclinic${BUILD_NUMBER} $BRANCH_NAME is completed
+
       Thanks
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
