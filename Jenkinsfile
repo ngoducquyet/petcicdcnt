@@ -51,7 +51,6 @@ node('docker_pt') {
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
-    sh 'mkdir /opt/tomcat/webapps/ '
     sh 'cp target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
 }
