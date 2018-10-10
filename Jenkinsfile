@@ -16,7 +16,7 @@ node{
     def uploadSpec = """{
       "files": [
         {
-          "pattern": "target/petclinic.war",
+          "pattern": "target/petclinic${BUILD_NUMBER}.war",
           "target": "pet-project-cd/${BUILD_NUMBER}/",
           "props": "Integration-Tested=Yes;Performance-Tested=No"
         }
@@ -24,7 +24,7 @@ node{
     }"""
     server.upload(uploadSpec)
   }
-  stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
+  stash includes: 'target/petclinic${BUILD_NUMBER}.war,src/test/jmeter/petclinic_test_plan.jmx',
   name: 'binary'
 }
 node('docker_pt') {
@@ -34,7 +34,7 @@ node('docker_pt') {
 //  }
 //  stage ('Deploy'){
     unstash 'binary'
-    sh 'cp target/petclinic.war /home/jenkins/tomcat/webapps/';
+    sh 'cp target/petclinic${BUILD_NUMBER}.war /home/jenkins/tomcat/webapps/';
   }
   stage ('Performance Testing'){
     sh '''cd /opt/jmeter/bin/
@@ -44,15 +44,15 @@ node('docker_pt') {
   stage ('Promote build in Artifactory'){
     withCredentials([usernameColonPassword(credentialsId:
       'artifactory-account', variable: 'credentials')]) {
-        sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-cd/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
+        sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-cd/${BUILD_NUMBER}/petclinic${BUILD_NUMBER}.war?properties=Performance-Tested=Yes"';
       }
   }
 }
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
-    sh 'mkdir /opt/tomcat/webapps/${BUILD_NUMBER}/ '
-    sh 'ls target/petclinic.war'
-    sh 'cp target/petclinic.war /opt/tomcat/webapps/${BUILD_NUMBER}/';
+    sh 'mkdir /opt/tomcat/webapps/ '
+    sh 'ls target/petclinic${BUILD_NUMBER}.war'
+    sh 'cp target/petclinic${BUILD_NUMBER}.war /opt/tomcat/webapps/';
   }
 }
