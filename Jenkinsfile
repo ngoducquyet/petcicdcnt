@@ -53,8 +53,8 @@ node('docker_pt') {
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
-    sh 'rm -rf /opt/tomcat/webapps/petclinic*';
-    sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
+    sh 'sudo rm -rf /opt/tomcat/webapps/petclinic*';
+    sh 'sudo cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
   stage('Email Notification'){
       mail bcc: '', body: '''Hi there, job petclinic is completed
