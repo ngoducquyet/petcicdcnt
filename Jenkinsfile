@@ -1,5 +1,5 @@
 
-node{
+node('master') {
   stage('Pull code') {
       checkout scm
   }
@@ -50,7 +50,7 @@ node('docker_pt') {
   }
 }
 
-node {
+node('master') {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
     sh 'sudo rm -rf /opt/tomcat/webapps/petclinic*';
