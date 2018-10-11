@@ -62,6 +62,8 @@ node {
       Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
   }
 
+  
+  
   stage('Slack Notification'){
        slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
        channel: '#build',
