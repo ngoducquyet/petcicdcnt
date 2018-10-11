@@ -19,7 +19,7 @@ node{
       "files": [
         {
           "pattern": "target/petclinic.war",
-          "target": "pet-project-cd/${BUILD_NUMBER}/",
+          "target": "pet-project-ci/${BUILD_NUMBER}/",
           "props": "Integration-Tested=Yes;Performance-Tested=No"
         }
       ]
@@ -45,7 +45,7 @@ node('docker_pt') {
   stage ('Promote build in Artifactory'){
     withCredentials([usernameColonPassword(credentialsId:
       'artifactory-account', variable: 'credentials')]) {
-        sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-cd/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
+        sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-ci/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
       }
   }
 }
@@ -53,9 +53,15 @@ node('docker_pt') {
 node {
   stage ('Deploy Staging enviroment'){
     unstash 'binary'
-    sh 'cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
+    sh 'sudo rm -rf /opt/tomcat/webapps/petclinic*';
+    sh 'sudo cp -rf target/petclinic.war /opt/tomcat/webapps/petclinic${BUILD_NUMBER}.war';
   }
-  
+  stage('Email Notification'){
+      mail bcc: '', body: '''Hi there, job petclinic is completed
+      Thanks
+      Quyet''', cc: '', from: '', replyTo: '', subject: 'Jenkins Deploy Job', to: 'ngoducquyet2018@gmail.com'
+  }
+
   stage('Slack Notification'){
        slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
        channel: '#build',
