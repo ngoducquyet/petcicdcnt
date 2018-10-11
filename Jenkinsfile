@@ -68,6 +68,6 @@ node('master') {
        slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
        channel: '#build',
        color: 'good', 
-       message: 'Job petclinic is completed, Slack :)'
+       message: 'Job petclinic is completed, Slack!'
   }
 }
