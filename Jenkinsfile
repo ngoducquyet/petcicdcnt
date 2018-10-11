@@ -19,7 +19,7 @@ node{
       "files": [
         {
           "pattern": "target/petclinic.war",
-          "target": "pet-project-cd/${BUILD_NUMBER}/",
+          "target": "pet-project-ci/${BUILD_NUMBER}/",
           "props": "Integration-Tested=Yes;Performance-Tested=No"
         }
       ]
@@ -45,7 +45,7 @@ node('docker_pt') {
   stage ('Promote build in Artifactory'){
     withCredentials([usernameColonPassword(credentialsId:
       'artifactory-account', variable: 'credentials')]) {
-        sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-cd/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
+        sh 'curl -u${credentials} -X PUT "http://jenkins-master:8081/artifactory/api/storage/pet-project-ci/${BUILD_NUMBER}/petclinic.war?properties=Performance-Tested=Yes"';
       }
   }
 }
