@@ -33,14 +33,14 @@ pipeline {
               }
             ]
           }"""
+          server.upload(uploadSpec) 
         }
-        server.upload(uploadSpec) 
+        stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
+        name: 'binary'
       }
     }
-    
-    stash includes: 'target/petclinic.war,src/test/jmeter/petclinic_test_plan.jmx',
-    name: 'binary'
   }
+  
   agent {
       label 'docker_pt'
   }
