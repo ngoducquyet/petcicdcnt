@@ -3,6 +3,9 @@ pipeline {
       label 'master'
   }
   stages {
+    stage('Pull code') {
+      checkout scm
+    }
     stage('Test branch name') {
       sh 'echo $BRANCH_NAME'
       sh 'echo ${BRANCH_NAME}'
