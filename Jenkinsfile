@@ -10,7 +10,14 @@ node('master') {
     echo BRANCH_NAME
     echo env.BRANCH_NAME
   }
-
+  stage('Run develop branch') {
+      when {
+          branch 'develop'  
+      }
+      steps {
+      echo 'develop branch'
+      }
+  }
   stage('Run feature branch') {
       def branch = $BRANCH_NAME
       when {
@@ -20,12 +27,5 @@ node('master') {
         echo 'run feature roi'
       }
   }
-  stage('Run develop branch') {
-      when {
-          branch 'develop'  
-      }
-      steps {
-      echo 'develop branch'
-      }
-  }
+
 }
