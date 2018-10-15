@@ -4,7 +4,9 @@ pipeline {
   }
   stages {
     stage('Pull code') {
-      checkout scm
+      steps {
+        checkout scm
+      }
     }
     stage('feature23') {
       when {
