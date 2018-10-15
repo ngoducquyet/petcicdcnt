@@ -1,3 +1,5 @@
+def branch = ${BRANCH_NAME}
+ 
 node('master') {
   stage('Pull code') {
     checkout scm
