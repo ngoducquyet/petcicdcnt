@@ -3,7 +3,6 @@ node('master') {
   stage('Pull code') {
     checkout scm
   }
-  def branch = ${BRANCH_NAME}
   stage('Unit test'){
     sh 'echo $BRANCH_NAME'
     sh 'echo ${BRANCH_NAME}'
@@ -11,12 +10,14 @@ node('master') {
     echo BRANCH_NAME
     echo env.BRANCH_NAME
   }
+
   stage('Run feature branch') {
+      def branch = $BRANCH_NAME
       when {
           branch 'feature23' 
       }
       steps {
-        echo "${BRANCH_NAME}"
+        echo 'run feature roi'
       }
   }
   stage('Run develop branch') {
