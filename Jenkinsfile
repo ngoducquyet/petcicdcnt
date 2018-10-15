@@ -3,28 +3,28 @@ pipeline {
       label 'master'
   }
   stages {
-      stage('Test branch name') {
-          sh 'echo $BRANCH_NAME'
-          sh 'echo ${BRANCH_NAME}'
-          echo "${BRANCH_NAME}"
-          echo BRANCH_NAME
-          echo env.BRANCH_NAME
+    stage('Test branch name') {
+      sh 'echo $BRANCH_NAME'
+      sh 'echo ${BRANCH_NAME}'
+      echo "${BRANCH_NAME}"
+      echo BRANCH_NAME
+      echo env.BRANCH_NAME
+    }
+    stage('feature23') {
+      when {
+          branch 'feature23' 
       }
-      stage('feature23') {
-          when {
-              branch 'feature23' 
-          }
-          steps {
-            echo 'run feature'
-          }
+      steps {
+        echo 'run feature'
       }
-      stage('Develop branch') {
-          when {
-              branch 'develop'  
-          }
-          steps {
-            echo 'run develop'
-          }
+    }
+    stage('Develop branch') {
+      when {
+          branch 'develop'  
       }
+      steps {
+        echo 'run develop'
+      }
+    }
   }
 }
