@@ -1,7 +1,7 @@
-node('master') {
+node('master'){
     stage('Example') {
-        if (env.BRANCH_NAME == 'feature*') {
-            echo 'I only execute on the env.BRANCH_NAME branch'
+        if (env.BRANCH_NAME == 'feature23') {
+            echo 'I only execute on the master branch'
         } else {
             echo 'I execute elsewhere'
         }
