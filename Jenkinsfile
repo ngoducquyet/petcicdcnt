@@ -1,11 +1,11 @@
 pipeline {
     agent {
-      master
+        label 'master'
     }
     stages {
-        stage('Example') {
-            steps { 
-                echo 'Hello World'
+        stage('testing 123') {
+            steps {
+                sh 'echo hello from master node'
             }
         }
     }
