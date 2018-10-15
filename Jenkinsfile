@@ -1,9 +1,9 @@
-def branch = ${BRANCH_NAME}
  
 node('master') {
   stage('Pull code') {
     checkout scm
   }
+  def branch = ${BRANCH_NAME}
   stage('Unit test'){
     sh 'echo $BRANCH_NAME'
     sh 'echo ${BRANCH_NAME}'
