@@ -49,9 +49,7 @@ pipeline {
         name: 'binary'
       }
     }
-  }
 
-  stages {
     stage('QA Auto test Environment') {
       agent {
       label 'docker_pt'
@@ -84,9 +82,7 @@ pipeline {
         }
       }
     }
-  }
-
-  stages {
+  
     stage('Deploy Staging enviroment') {
       agent {
       label 'master'
