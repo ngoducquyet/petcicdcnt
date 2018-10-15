@@ -1,14 +1,18 @@
 pipeline {
-  agent {
-      label 'master'
-  }
+  agent none
   stages {
     stage('Pull code') {
+      agent {
+      label 'master'
+      }
       steps {
         checkout scm
       }
     }
     stage('Unit test') {
+      agent {
+      label 'master'
+      }
       steps {
         sh 'mvn clean -P MySQL verify -DskipITs=true';
         junit '**/target/surefire-reports/TEST-*.xml'
@@ -16,11 +20,17 @@ pipeline {
       }
     }
     stage('Static Code Analysis') {
+      agent {
+      label 'master'
+      }
       steps {
         sh 'mvn clean -P MySQL verify sonar:sonar -Dsonar.host.url=http://jenkins-master:9000 -Dsonar.projectName=pet-project -Dsonar.projectKey=pet-project -Dsonar.projectVersion=$BUILD_NUMBER';
       }
     }
     stage('Publish to Artifactory') {
+      agent {
+      label 'master'
+      }
       steps {
         script {
           def server = Artifactory.server 'Default Artifactory Server'
@@ -40,12 +50,12 @@ pipeline {
       }
     }
   }
-  
-  agent {
-      label 'docker_pt'
-  }
+
   stages {
     stage('QA Auto test Environment') {
+      agent {
+      label 'docker_pt'
+      }
       steps {
         sh '''cd /home/jenkins/tomcat/bin
         ./startup.sh''';
@@ -54,6 +64,9 @@ pipeline {
       }
     }
     stage('Performance Testing') {
+      agent {
+      label 'docker_pt'
+      }
       steps {
         sh '''cd /opt/jmeter/bin/
         ./jmeter.sh -n -t $WORKSPACE/src/test/jmeter/petclinic_test_plan.jmx -l $WORKSPACE/test_report.jtl''';
@@ -61,6 +74,9 @@ pipeline {
       }
     }
     stage('Promote build in Artifactory') {
+      agent {
+      label 'docker_pt'
+      }
       steps {
         withCredentials([usernameColonPassword(credentialsId:
         'artifactory-account', variable: 'credentials')]) {
@@ -70,11 +86,11 @@ pipeline {
     }
   }
 
-  agent {
-      label 'master'
-  }
   stages {
     stage('Deploy Staging enviroment') {
+      agent {
+      label 'master'
+      }
       steps {
         unstash 'binary'
         sh 'sudo rm -rf /opt/tomcat/webapps/petclinic*';
@@ -82,6 +98,9 @@ pipeline {
       }
     }
     stage('Email Notification') {
+      agent {
+      label 'master'
+      }
       steps {
         mail bcc: '', body: '''Hi there, job petclinic is completed
         Thanks
@@ -89,6 +108,9 @@ pipeline {
       }
     }
     stage('Slack Notification') {
+      agent {
+      label 'master'
+      }
       steps {
        slackSend baseUrl: 'https://ngoducquyet.slack.com/services/hooks/jenkins-ci/',
        channel: '#build',
