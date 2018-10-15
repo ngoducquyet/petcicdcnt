@@ -33,8 +33,8 @@ pipeline {
               }
             ]
           }"""
-          server.upload(uploadSpec) 
         }
+        server.upload(uploadSpec) 
       }
     }
     
