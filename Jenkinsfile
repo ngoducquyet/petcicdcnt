@@ -7,7 +7,7 @@ node('master') {
     sh 'echo ${BRANCH_NAME}'
     echo "${BRANCH_NAME}"
     echo BRANCH_NAME
-    /echo env.BRANCH_NAME
+    echo env.BRANCH_NAME
   }
   /*
   stage('Run feature branch') {
